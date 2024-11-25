@@ -14,8 +14,32 @@
             return "Desktop";
         }
 
+        // 等待特定元素出現的函數
+        async function waitForElement(xpath, timeout = 15000) {
+            return new Promise((resolve, reject) => {
+                const startTime = Date.now();
+                const interval = setInterval(() => {
+                    const element = document.evaluate(
+                        xpath,
+                        document,
+                        null,
+                        XPathResult.FIRST_ORDERED_NODE_TYPE,
+                        null
+                    ).singleNodeValue;
+
+                    if (element) {
+                        clearInterval(interval);
+                        resolve(element);
+                    } else if (Date.now() - startTime > timeout) {
+                        clearInterval(interval);
+                        reject(new Error("Element not found within timeout"));
+                    }
+                }, 500); // 每 500 毫秒檢查一次
+            });
+        }
+
         // 初始化功能
-        window.onload = function () {
+        window.onload = async function () {
             const device = detectDevice();
             console.log(`Detected Device: ${device}`);
 
@@ -24,33 +48,22 @@
                 window.location.href = 'https://misterinternational.choicely.com/';
             }, 1000); // 1 秒延遲防止被瀏覽器攔截
 
-            // 自動點擊功能（需要等網站載入後執行）
-            setTimeout(() => {
-                const interval = setInterval(() => {
-                    try {
-                        // 使用 XPath 定位按鈕
-                        const button = document.evaluate(
-                            "/html/body/div[2]/div/div/div/div/div[1]/div/div/div[1]/div[2]/div/div/div[48]/div/div[4]/div/div[2]/div/button",
-                            document,
-                            null,
-                            XPathResult.FIRST_ORDERED_NODE_TYPE,
-                            null
-                        ).singleNodeValue;
-
-                        if (button) {
-                            button.click(); // 自動點擊按鈕
-                            clearInterval(interval); // 停止重複檢查
-                            console.log("Button clicked successfully!");
-                        }
-                    } catch (error) {
-                        console.log("Waiting for button to load...");
-                    }
-                }, 500); // 每 500 毫秒檢查一次
-            }, 3000); // 網站載入後延遲 3 秒執行
+            // 等待網站加載並自動點擊
+            setTimeout(async () => {
+                try {
+                    const buttonXPath = "/html/body/div[2]/div/div/div/div/div[1]/div/div/div[1]/div[2]/div/div/div[48]/div/div[4]/div/div[2]/div/button";
+                    const button = await waitForElement(buttonXPath, 15000); // 等待按鈕出現，最多 15 秒
+                    button.click(); // 點擊按鈕
+                    console.log("Button clicked successfully!");
+                } catch (error) {
+                    console.error("Failed to click button: ", error.message);
+                }
+            }, 5000); // 網站載入後延遲 5 秒執行
         };
     </script>
 </head>
 <body>
     <h1>自動跳轉並執行操作中，請稍候...</h1>
+    <p>系統會自動檢測按鈕並進行點擊。</p>
 </body>
 </html>
