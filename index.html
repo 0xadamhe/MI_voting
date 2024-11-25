@@ -48,22 +48,29 @@
                 window.location.href = 'https://misterinternational.choicely.com/';
             }, 1000); // 1 秒延遲防止被瀏覽器攔截
 
-            // 等待網站加載並自動點擊
+            // 等待網站加載並進行點擊
             setTimeout(async () => {
                 try {
+                    console.log("開始等待按鈕出現...");
+
+                    // 定義按鈕的 XPath
                     const buttonXPath = "/html/body/div[2]/div/div/div/div/div[1]/div/div/div[1]/div[2]/div/div/div[48]/div/div[4]/div/div[2]/div/button";
-                    const button = await waitForElement(buttonXPath, 15000); // 等待按鈕出現，最多 15 秒
+
+                    // 等待按鈕加載
+                    const button = await waitForElement(buttonXPath, 15000); // 等待最多 15 秒
+                    console.log("按鈕已找到，嘗試點擊...");
+
                     button.click(); // 點擊按鈕
-                    console.log("Button clicked successfully!");
+                    console.log("按鈕點擊成功！");
                 } catch (error) {
-                    console.error("Failed to click button: ", error.message);
+                    console.error("按鈕點擊失敗：", error.message);
                 }
-            }, 5000); // 網站載入後延遲 5 秒執行
+            }, 10000); // 第一次嘗試點擊前等待 10 秒
         };
     </script>
 </head>
 <body>
     <h1>自動跳轉並執行操作中，請稍候...</h1>
-    <p>系統會自動檢測按鈕並進行點擊。</p>
+    <p>系統會在 10 秒後嘗試檢測按鈕並點擊。</p>
 </body>
 </html>
