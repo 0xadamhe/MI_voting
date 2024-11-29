@@ -3,74 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cross-Platform Auto Click</title>
+    <title>Auto Click Button</title>
     <script>
-        // 檢測設備類型（適配不同平台）
-        function detectDevice() {
-            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-            if (/windows phone/i.test(userAgent)) return "Windows Phone";
-            if (/android/i.test(userAgent)) return "Android";
-            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) return "iOS";
-            return "Desktop";
-        }
-
-        // 等待特定元素出現的函數
-        async function waitForElement(xpath, timeout = 15000) {
-            return new Promise((resolve, reject) => {
-                const startTime = Date.now();
-                const interval = setInterval(() => {
-                    const element = document.evaluate(
-                        xpath,
-                        document,
-                        null,
-                        XPathResult.FIRST_ORDERED_NODE_TYPE,
-                        null
-                    ).singleNodeValue;
-
-                    if (element) {
-                        clearInterval(interval);
-                        resolve(element);
-                    } else if (Date.now() - startTime > timeout) {
-                        clearInterval(interval);
-                        reject(new Error("Element not found within timeout"));
-                    }
-                }, 500); // 每 500 毫秒檢查一次
-            });
-        }
-
-        // 初始化功能
-        window.onload = async function () {
-            const device = detectDevice();
-            console.log(`Detected Device: ${device}`);
-
-            // 跳轉到目標網站
+        // 自動跳轉並點擊按鈕
+        function autoClick() {
+            const newWin = window.open('https://misterinternational.choicely.com/', '_blank');
             setTimeout(() => {
-                window.location.href = 'https://misterinternational.choicely.com/';
-            }, 1000); // 1 秒延遲防止被瀏覽器攔截
-
-            // 等待網站加載並進行點擊
-            setTimeout(async () => {
                 try {
-                    console.log("開始等待按鈕出現...");
-
-                    // 定義按鈕的 XPath
-                    const buttonXPath = "/html/body/div[2]/div/div/div/div/div[1]/div/div/div[1]/div[2]/div/div/div[48]/div/div[2]/div/div[2]/div/button";
-
-                    // 等待按鈕加載
-                    const button = await waitForElement(buttonXPath, 15000); // 等待最多 15 秒
-                    console.log("按鈕已找到，嘗試點擊...");
-
-                    button.click(); // 點擊按鈕
-                    console.log("按鈕點擊成功！");
-                } catch (error) {
-                    console.error("按鈕點擊失敗：", error.message);
+                    const button = newWin.document.querySelector("#choicely-widget-isolation > div > div:nth-child(1) > div > div > div:nth-child(1) > div:nth-child(2) > div > div > div:nth-child(45) > div > div:nth-child(4) > div > div:nth-child(2) > div > button");
+                    if (button) {
+                        button.click();
+                        console.log('Button clicked successfully!');
+                    } else {
+                        console.log('Button not found.');
+                    }
+                } catch (e) {
+                    console.error('Error while clicking the button:', e);
                 }
-            }, 10000); // 第一次嘗試點擊前等待 10 秒
-        };
+            }, 5000); // 等待 5 秒以確保目標網站加載完成
+        }
     </script>
 </head>
-<body>
-    <h1>自動跳轉並執行操作中，請稍候...</h1>
-    <p>系統會在 10 秒後嘗試檢測按鈕並點擊。</p>
+<body onload="autoClick()">
+    <h1>Auto Clicker</h1>
+    <p>This page will automatically open the target site and attempt to click the button.</p>
 </body>
 </html>
