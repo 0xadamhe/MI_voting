@@ -3,29 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auto Click Button</title>
-    <script>
-        // 自動跳轉並點擊按鈕
-        function autoClick() {
-            const newWin = window.open('https://misterinternational.choicely.com/', '_blank');
-            setTimeout(() => {
-                try {
-                    const button = newWin.document.querySelector("#choicely-widget-isolation > div > div:nth-child(1) > div > div > div:nth-child(1) > div:nth-child(2) > div > div > div:nth-child(45) > div > div:nth-child(4) > div > div:nth-child(2) > div > button");
-                    if (button) {
-                        button.click();
-                        console.log('Button clicked successfully!');
-                    } else {
-                        console.log('Button not found.');
-                    }
-                } catch (e) {
-                    console.error('Error while clicking the button:', e);
-                }
-            }, 5000); // 等待 5 秒以確保目標網站加載完成
-        }
-    </script>
+    <title>Auto Click</title>
 </head>
-<body onload="autoClick()">
-    <h1>Auto Clicker</h1>
-    <p>This page will automatically open the target site and attempt to click the button.</p>
+<body>
+    <h1>Redirecting to the Target Site...</h1>
+    <script>
+        // 跳轉到目標網站並嘗試自動點擊按鈕
+        window.location.href = "https://misterinternational.choicely.com/";
+        setTimeout(() => {
+            try {
+                const button = document.querySelector("#choicely-widget-isolation > div > div:nth-child(1) > div > div > div:nth-child(1) > div:nth-child(2) > div > div > div:nth-child(45) > div > div:nth-child(4) > div > div:nth-child(2) > div > button");
+                if (button) {
+                    button.click();
+                    console.log("Button clicked successfully!");
+                } else {
+                    console.log("Button not found.");
+                }
+            } catch (e) {
+                console.error("Error during the clicking process:", e);
+            }
+        }, 5000); // 等待 5 秒讓目標頁面加載完成
+    </script>
 </body>
 </html>
